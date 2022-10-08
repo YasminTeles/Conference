@@ -1,0 +1,22 @@
+# CI
+.github/
+
+# dependencies
+node_modules/
+
+# IDE
+.vscode/
+
+# production
+/build
+
+# next.js
+.next/
+/out/
+.swc/
+
+# vercel
+.vercel
+
+# testing
+/coverage

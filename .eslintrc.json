@@ -1,0 +1,53 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+		"plugin:react-perf/recommended"
+  ],
+
+  "plugins": [
+    "react",
+    "jsx-a11y",
+    "import",
+		"eslint-plugin-import-helpers",
+    "react-hooks",
+		"react-perf"
+	],
+
+  "rules": {
+    "semi": ["error","never"],
+    "quotes": ["error", "double"],
+    "eqeqeq": ["error", "always"],
+
+    "react/no-multi-comp": "error",
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-props-no-spreading": "off",
+
+    "import/newline-after-import": "warn",
+    "import-helpers/order-imports": [
+      "warn",
+      {
+        "newlinesBetween": "always",
+        "groups": [
+          "/^react/",
+          "module",
+          [
+            "/^@pages/",
+            "/^@components/",
+            "/^@constants/",
+            "/^@services/",
+            "/^@types/",
+            "/^@images/",
+            "/^@styles/"
+          ],
+          ["parent", "sibling", "index"]
+        ],
+        "alphabetize": {
+          "order": "asc",
+          "ignoreCase": true
+        }
+      }
+    ]
+	}
+}

@@ -1,0 +1,80 @@
+name: Check code health
+
+on:
+  push:
+    branches: [ master, main ]
+
+jobs:
+  Lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Setup project
+        run: make setup || make setup || make setup
+
+      - name: Run lint
+        run: make lint
+
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Setup project
+        run: make setup || make setup || make setup
+
+      - name: Run tests
+        run: make test-reports
+
+      - name: Upload tests report
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: coverage/**/*
+
+  Build:
+    needs: [Lint, Test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Setup project
+        run: make setup || make setup || make setup
+
+      - name: Build the application
+        run: make build
+
+  Message:
+    name: Error message
+    needs: [Lint, Test, Build]
+    runs-on: ubuntu-latest
+    if: ${{ failure() }}
+    steps:
+      - name: Post to Slack
+        id: slack
+        uses: slackapi/slack-github-action@v1.21.0
+        with:
+          channel-id: 'C02BH3AS9S7'
+          slack-message: ":eyes: *${{ github.repository }}* GitHub Actions: ${{ github.workflow }} #${{ github.run_number }} failed.\n<${{ github.event.repository.url }}/actions/runs/${{ github.run_id }}|${{ github.event.head_commit.message }}>"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
